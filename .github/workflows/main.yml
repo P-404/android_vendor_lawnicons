@@ -1,0 +1,30 @@
+name: UPSTREAM
+
+on:
+  schedule:
+    - cron: '0 0 * * 0'
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Pull Action
+    runs-on: ubuntu-20.04
+    steps:
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install git
+    - name: Pull
+      run: |
+        git config --global user.name "${GITHUB_USER}"
+        git config --global user.email "${GITHUB_EMAIL}"
+        git clone https://"${GITHUB_USER}":"${GITHUB_TOKEN}"@github.com/P-404/android_vendor_lawnicons.git -b shinka
+        cd android_vendor_lawnicons
+        git remote add lawnicons https://github.com/LawnchairLauncher/lawnicons.git 
+        git fetch lawnicons
+        git merge lawnicons/develop
+        git push -f
+      env:
+        GITHUB_EMAIL: ${{ secrets.EMAIL }}
+        GITHUB_TOKEN: ${{ secrets.TOKEN }}
+        GITHUB_USER: ${{ secrets.USERNAME }}
