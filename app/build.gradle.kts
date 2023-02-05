@@ -20,7 +20,7 @@ val ciRunNumber = System.getenv("GITHUB_RUN_NUMBER").orEmpty()
 val isReleaseBuild = ciBuild && ciRef == "main"
 val devReleaseName = if (ciBuild) "(Dev #$ciRunNumber)" else "($buildCommit)"
 
-val version = "1.2.0"
+val version = "2.0.0"
 val versionDisplayName = "$version ${if (isReleaseBuild) "" else devReleaseName}"
 
 android {
@@ -63,16 +63,13 @@ android {
 
     flavorDimensions += "product"
     productFlavors {
-        create("dark") {
+        create("app") {
             dimension = "product"
             resValue("string", "apps_name", "Lawnicons")
         }
-        create("light") {
-            dimension = "product"
-            applicationIdSuffix = ".light"
-            versionNameSuffix = "-light"
-            resValue("string", "apps_name", "Lawnicons (light)")
-        }
+    }
+    sourceSets.getByName("app") {
+        res.setSrcDirs(listOf("src/runtime/res"))
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
