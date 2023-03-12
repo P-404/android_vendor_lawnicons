@@ -87,7 +87,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.2"
+        kotlinCompilerExtensionVersion = "1.4.3"
     }
 
     packagingOptions {
@@ -112,7 +112,7 @@ android {
 hilt.enableAggregatingTask = false
 
 dependencies {
-    val lifecycleVersion = "2.5.1"
+    val lifecycleVersion = "2.6.0"
     val accompanistVersion = "0.28.0"
     val hiltVersion = "2.45"
     val retrofitVersion = "2.9.0"
@@ -125,7 +125,7 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     implementation("androidx.compose.animation:animation")
     implementation("androidx.compose.material:material")
-    implementation("androidx.compose.material3:material3:1.1.0-alpha07")
+    implementation("androidx.compose.material3:material3:1.1.0-alpha08")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycleVersion")
     implementation("com.google.accompanist:accompanist-insets:$accompanistVersion")
