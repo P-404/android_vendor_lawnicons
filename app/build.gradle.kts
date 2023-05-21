@@ -20,7 +20,7 @@ val ciRunNumber = System.getenv("GITHUB_RUN_NUMBER").orEmpty()
 val isReleaseBuild = ciBuild && ciRef.contains("main")
 val devReleaseName = if (ciBuild) "(Dev #$ciRunNumber)" else "($buildCommit)"
 
-val version = "2.0.0"
+val version = "2.1.0"
 val versionDisplayName = "$version ${if (isReleaseBuild) "" else devReleaseName}"
 
 android {
@@ -114,7 +114,7 @@ hilt.enableAggregatingTask = false
 dependencies {
     val lifecycleVersion = "2.6.1"
     val accompanistVersion = "0.30.1"
-    val hiltVersion = "2.46"
+    val hiltVersion = "2.46.1"
     val retrofitVersion = "2.9.0"
 
     implementation("androidx.appcompat:appcompat:1.6.1")
