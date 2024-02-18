@@ -1,6 +1,7 @@
 import git
 import html
 import os
+import sys
 import requests
 
 github_event_before = os.getenv('GITHUB_EVENT_BEFORE')
@@ -58,19 +59,25 @@ def telegram_commit_message(commits, commits_range):
 
 # Discord
 def send_message_to_builds_channel(message):
-    requests.post(
-        discord_ci_bot_token,
-        {
-            "content": message
-        }
-    )
+    try:
+        requests.post(
+            discord_ci_bot_token,
+            {
+                "content": message
+            }
+        )
+    except:
+        print(sys.exception())
 
 def send_document_to_builds_channel(document):
-    files = {
-        'payload_json': (None, '{"content": ""}'),
-        'media': document
-    }
-    requests.post(discord_ci_bot_token, files=files)
+    try:
+        files = {
+            'payload_json': (None, '{"content": ""}'),
+            'media': document
+        }
+        requests.post(discord_ci_bot_token, files=files)
+    except:
+        print(sys.exception())
 
 def discord_commit_message(commits, commits_range):
     overview_link = f'{github_link()}compare/{commits_range}>'
@@ -103,6 +110,6 @@ if len(commits) != 0:
 
     with open(f'{artifact_directory}/{os.listdir(artifact_directory)[0]}', 'rb') as apk:
         send_document_to_ci_channel(document=apk)
-    
+
     with open(f'{artifact_directory}/{os.listdir(artifact_directory)[0]}', 'rb') as apk:
          send_document_to_builds_channel(document=apk)
