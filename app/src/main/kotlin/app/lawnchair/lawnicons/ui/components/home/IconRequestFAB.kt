@@ -3,10 +3,12 @@ package app.lawnchair.lawnicons.ui.components.home
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -14,10 +16,12 @@ import androidx.compose.ui.res.stringResource
 import app.lawnchair.lawnicons.R
 import app.lawnchair.lawnicons.model.IconRequest
 import app.lawnchair.lawnicons.model.IconRequestModel
+import app.lawnchair.lawnicons.ui.util.isScrollingUp
 
 @Composable
 fun IconRequestFAB(
     iconRequestModel: IconRequestModel?,
+    lazyGridState: LazyGridState,
     modifier: Modifier = Modifier,
 ) {
     Log.d("IconRequestFAB", "iconRequestModel: $iconRequestModel")
@@ -25,7 +29,7 @@ fun IconRequestFAB(
         if (iconRequestModel.iconCount > 0) {
             IconRequestFAB(
                 iconRequestList = iconRequestModel.list,
-                iconRequestCount = iconRequestModel.iconCount,
+                lazyGridState = lazyGridState,
                 modifier = modifier,
             )
         }
@@ -35,7 +39,7 @@ fun IconRequestFAB(
 @Composable
 fun IconRequestFAB(
     iconRequestList: List<IconRequest>,
-    iconRequestCount: Int,
+    lazyGridState: LazyGridState,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -43,7 +47,7 @@ fun IconRequestFAB(
 
     ExtendedFloatingActionButton(
         text = {
-            Text(stringResource(R.string.unthemed_icons_info, iconRequestCount))
+            Text(stringResource(R.string.unthemed_icons_info))
         },
         icon = { Icon(painter = painterResource(id = R.drawable.icon_request_app), contentDescription = null) },
         onClick = {
@@ -52,6 +56,7 @@ fun IconRequestFAB(
             context.startActivity(intent)
         },
         modifier = modifier,
+        expanded = lazyGridState.isScrollingUp(),
     )
 }
 
