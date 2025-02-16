@@ -24,18 +24,19 @@ object AppfilterDiffCreator {
     private fun getPreviousReleaseLines(
         appFilterFile: String,
     ): List<String> {
-        return try {
+        try {
             runGitCommand(listOf("fetch", "--tags"))
+        } catch (_: Exception) {
+            // assume that we have fetched the tags already
+        }
 
-            val tagCommand =
-                listOf("/usr/bin/bash", "-c", "git tag --sort=-creatordate | head -n 1")
-            val tagProcess = ProcessBuilder(tagCommand)
-                .redirectErrorStream(true)
-                .start()
+        return try {
+            val tags = runGitCommand(listOf("tag", "--sort=-creatordate"))
+            val latestTag = tags.firstOrNull() ?: {
+                // fallback to `main` branch
+                val fallbackTags = runGitCommand(listOf("show", "main"))
 
-            val latestTag = tagProcess.inputStream.bufferedReader().readLine()
-            if (tagProcess.waitFor() != 0) {
-                throw RuntimeException("Failed to get latest tag")
+                fallbackTags.firstOrNull() ?: throw RuntimeException("No tags found")
             }
 
             runGitCommand(listOf("show", "$latestTag:$appFilterFile"))
@@ -76,7 +77,17 @@ object AppfilterDiffCreator {
         mainLines: List<String>,
         developLines: List<String>,
     ): List<String> {
-        return developLines.filterNot { it in mainLines }
+        val drawablesInMain = mainLines.mapNotNull { extractDrawableItem(it) }.toSet()
+
+        return developLines.filter { item ->
+            val drawable = extractDrawableItem(item)
+            drawable != null && drawable !in drawablesInMain
+        }
+    }
+
+    private fun extractDrawableItem(item: String): String? {
+        val regex = """drawable="([^"]+)"""".toRegex()
+        return regex.find(item)?.groups?.get(1)?.value
     }
 
     private fun writeDiffToFile(
