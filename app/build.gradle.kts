@@ -1,7 +1,5 @@
-import app.cash.licensee.LicenseeTask
+import app.cash.licensee.SpdxId
 import com.android.build.gradle.internal.api.ApkVariantOutputImpl
-import com.android.build.gradle.tasks.MergeResources
-import java.util.Locale
 import java.util.Properties
 
 plugins {
@@ -107,26 +105,11 @@ android {
                 "Lawnicons $versionName v${versionCode}_${buildType.name}.apk"
         }
     }
-}
 
-androidComponents.onVariants { variant ->
-    val capName = variant.name.replaceFirstChar { it.titlecase(Locale.ROOT) }
-    val licenseeTask = tasks.named<LicenseeTask>("licenseeAndroid$capName")
-    val copyArtifactsTask = tasks.register<Copy>("copy${capName}Artifacts") {
-        dependsOn(licenseeTask)
-        from(licenseeTask.map { it.jsonOutput })
-        // Copy artifacts.json to a new directory.
-        into(layout.buildDirectory.dir("generated/dependencyAssets/${variant.name}"))
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
-    variant.sources.assets?.addGeneratedSourceDirectory(licenseeTask) {
-        // Avoid using LicenseeTask::outputDir as it contains extra files that we don't need.
-        objects.directoryProperty().fileProvider(copyArtifactsTask.map { it.destinationDir })
-    }
-}
-
-// Process SVGs before every build.
-tasks.withType<MergeResources>().configureEach {
-    dependsOn(projects.svgProcessor.dependencyProject.tasks.named("run"))
 }
 
 composeCompiler {
@@ -135,15 +118,17 @@ composeCompiler {
 }
 
 licensee {
-    allow("Apache-2.0")
-    allow("MIT")
+    allow(SpdxId.Apache_20)
+    allow(SpdxId.MIT)
+
+    bundleAndroidAsset = true
 }
 
 dependencies {
     implementation("androidx.core:core-ktx:1.15.0")
     implementation("androidx.core:core-splashscreen:1.0.1")
     implementation("androidx.activity:activity-compose:1.10.1")
-    implementation(platform("androidx.compose:compose-bom:2025.02.00"))
+    implementation(platform("androidx.compose:compose-bom:2025.03.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.ui:ui-util")
@@ -152,12 +137,12 @@ dependencies {
     implementation("androidx.compose.material:material-icons-core-android")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.material3:material3-window-size-class")
-    implementation("androidx.navigation:navigation-compose:2.8.8")
+    implementation("androidx.navigation:navigation-compose:2.8.9")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
 
-    val hiltVersion = "2.55"
+    val hiltVersion = "2.56"
     implementation("com.google.dagger:hilt-android:$hiltVersion")
     ksp("com.google.dagger:hilt-compiler:$hiltVersion")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
@@ -169,4 +154,8 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.7.0")
     implementation("com.github.nanihadesuka:LazyColumnScrollbar:2.2.0")
     implementation("io.github.fornewid:material-motion-compose-core:2.0.1")
+}
+
+tasks.preBuild {
+    dependsOn(project(projects.svgProcessor.path).tasks.named("run"))
 }
