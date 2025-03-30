@@ -128,7 +128,7 @@ dependencies {
     implementation("androidx.core:core-ktx:1.15.0")
     implementation("androidx.core:core-splashscreen:1.0.1")
     implementation("androidx.activity:activity-compose:1.10.1")
-    implementation(platform("androidx.compose:compose-bom:2025.03.00"))
+    implementation(platform("androidx.compose:compose-bom:2025.03.01"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.ui:ui-util")
@@ -142,7 +142,7 @@ dependencies {
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
 
-    val hiltVersion = "2.56"
+    val hiltVersion = "2.56.1"
     implementation("com.google.dagger:hilt-android:$hiltVersion")
     ksp("com.google.dagger:hilt-compiler:$hiltVersion")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
