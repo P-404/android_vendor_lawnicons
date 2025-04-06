@@ -113,7 +113,11 @@ android {
 }
 
 composeCompiler {
-    stabilityConfigurationFile = layout.projectDirectory.file("compose_compiler_config.conf")
+    stabilityConfigurationFiles.addAll(
+        listOf(
+            layout.projectDirectory.file("compose_compiler_config.conf"),
+        ),
+    )
     reportsDestination = layout.buildDirectory.dir("compose_build_reports")
 }
 
@@ -140,7 +144,7 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.8.9")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
 
     val hiltVersion = "2.56.1"
     implementation("com.google.dagger:hilt-android:$hiltVersion")
